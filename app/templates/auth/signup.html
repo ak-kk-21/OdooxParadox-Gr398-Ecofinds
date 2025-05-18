@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign Up - EcoFinds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        img.logo {
+            width: 120px;
+            margin-bottom: 1rem;
+        }
+        form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background: #2d6a4f;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1b472f;
+        }
+        .error {
+            color: red;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .success {
+            color: green;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="EcoFinds Logo" class="logo" />
+
+    <form action="{{ url_for('auth.signup') }}" method="post" enctype="multipart/form-data" novalidate>
+        {{ csrf_token() }} <!-- if using Flask-WTF or similar, otherwise remove -->
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <label for="username">Display Name (Username)</label>
+        <input type="text" id="username" name="username" value="{{ request.form.username or '' }}" required minlength="3" maxlength="50" />
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" value="{{ request.form.email or '' }}" required />
+
+        <label for="profile_picture">Profile Picture (optional)</label>
+        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="8" />
+
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" required minlength="8" />
+
+        <button type="submit">Sign Up</button>
+    </form>
+</body>
+</html>

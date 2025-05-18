@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EcoFinds | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-center">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="EcoFinds Logo" height="100">
+        </div>
+
+        <h2 class="center-text">Login to EcoFinds</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+            <label for="email">Email or Username:</label>
+            <input type="text" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p class="center-text">Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up</a></p>
+    </div>
+</body>
+</html>

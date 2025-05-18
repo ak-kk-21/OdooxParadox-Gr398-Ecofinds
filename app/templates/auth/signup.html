@@ -71,8 +71,6 @@
     <img src="{{ url_for('static', filename='logo.png') }}" alt="EcoFinds Logo" class="logo" />
 
     <form action="{{ url_for('auth.signup') }}" method="post" enctype="multipart/form-data" novalidate>
-        {{ csrf_token() }} <!-- if using Flask-WTF or similar, otherwise remove -->
-
         {% if error %}
             <div class="error">{{ error }}</div>
         {% endif %}

@@ -1,10 +1,23 @@
 import os
-from flask import Flask
+from flask import Flask, session, g
+from app.database import get_db
 
 import app.database
 print("app.database module:", app.database)
 print("init_app attribute:", hasattr(app.database, "init_app"))
 
+
+@app.before_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        db = get_db()
+        g.user = db.execute(
+            'SELECT * FROM Users WHERE user_id = ?', (user_id,)
+        ).fetchone()
 
 def create_app(test_config=None):
     # Create and configure the app
@@ -51,5 +64,8 @@ def create_app(test_config=None):
 
     # Define the root route (landing page)
     app.add_url_rule('/', endpoint='index')
+
+
+
 
     return app

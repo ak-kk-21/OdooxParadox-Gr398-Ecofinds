@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}EcoFinds{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f9f4;
+        }
+        header {
+            background-color: #2d6a4f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            height: 50px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+        }
+        .profile img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            object-fit: cover;
+        }
+        main {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="left">
+            <a href="{{ url_for('browsing.landing') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="EcoFinds Logo" class="logo">
+            </a>
+        </div>
+
+        <nav>
+            <a href="{{ url_for('browsing.landing') }}">Home</a>
+            <a href="{{ url_for('browsing.explore') }}">Explore</a>
+            {% if g.user %}
+                <a href="{{ url_for('user_functions.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('auth.logout') }}">Logout</a>
+                <div class="profile">
+                    <span>{{ g.user['username'] }}</span>
+                    {% if g.user['Profile_picture'] %}
+                        <img src="{{ url_for('static', filename=g.user['Profile_picture'].split('static/')[-1]) }}" alt="Profile Pic">
+                    {% endif %}
+                </div>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.signup') }}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

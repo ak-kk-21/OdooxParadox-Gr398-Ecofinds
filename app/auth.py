@@ -8,6 +8,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from app.database import get_db
 
+from functools import wraps
+from flask import session, redirect, url_for, flash, g
+
+def login_required(view):
+    @wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            flash("Please log in to continue.")
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view
+
+
 # This file handles user authentication, including signup and login functionalities.
 # It uses Flask's Blueprint to organize the routes and handlers for authentication.
 
@@ -73,11 +86,12 @@ def signup():
             db.commit()
 
             flash('Successfully registered! Please login.', 'success')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('browsing.landing'))
+
 
         flash(error, 'error')
 
-    return render_template(r'auth\signup.html', error=error)
+    return render_template('auth/signup.html', error=error)
 
 # Database helper function to get DB connection
 from flask import g, current_app
@@ -117,4 +131,22 @@ def login():
                 session['username'] = user['username']
                 return redirect(url_for('user_functions.dashboard'))
 
-    return render_template(r'auth\login.html', error=error)
+    return render_template('auth/login.html', error=error)
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        db = get_db()
+        g.user = db.execute(
+            'SELECT * FROM Users WHERE user_id = ?', (user_id,)
+        ).fetchone()
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    flash("You’ve been logged out.")
+    return redirect(url_for('auth.login'))
